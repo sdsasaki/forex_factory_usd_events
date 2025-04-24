@@ -19,6 +19,8 @@ import re
 from bs4 import BeautifulSoup
 import sys
 import os
+from tkcalendar import Calendar
+from datetime import datetime
 
 def resource_path(filename):
     """Get absolute path to resource (for PyInstaller)."""
@@ -179,17 +181,22 @@ root = tk.Tk()
 root.title("USD Events - Forex Factory")
 root.geometry("700x450")
 
+def on_calendar_select(event):
+    global selected_date
+    selected_date = datetime.strptime(calendar.get_date(), "%m/%d/%y")
+    update_ui()
+
+# Add a calendar widget
+calendar = Calendar(root, selectmode='day', showweeknumbers=False, date_pattern='mm/dd/yy', mindate=datetime(datetime.today().year, 1, 1),
+    maxdate=datetime(datetime.today().year, 12, 31))
+calendar.pack(pady=5)
+calendar.bind("<<CalendarSelected>>", on_calendar_select)
+
 top_frame = tk.Frame(root)
 top_frame.pack(pady=10)
 
-prev_button = tk.Button(top_frame, text="← Previous", command=prev_day)
-prev_button.pack(side=tk.LEFT, padx=10)
-
 date_label = tk.Label(top_frame, font=('Arial', 14))
 date_label.pack(side=tk.LEFT, padx=10)
-
-next_button = tk.Button(top_frame, text="Next →", command=next_day)
-next_button.pack(side=tk.LEFT, padx=10)
 
 frame = tk.Frame(root)
 frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
